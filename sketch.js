@@ -3,8 +3,8 @@ const GRAVITY = 0;
 const ROCKET_COUNT = 100;
 const FRAMES_PER_SIM = 150;
 let SIM_SPEED = 1;
-const MAX_MUTATION_CHANCE = 0.1;
-const MIN_MUTATION_CHANCE = 0.0005;
+const MAX_MUTATION_CHANCE = 0.6;
+const MIN_MUTATION_CHANCE = 0.0001;
 let MUTATION_CHANCE = MAX_MUTATION_CHANCE;
 
 let generation = 0;
@@ -45,11 +45,11 @@ function draw() {
     generationAge++;
     if (generationAge < FRAMES_PER_SIM) {
       rockets.forEach(r => r.update());
-      if (!onlyTopRocket) 
-        rockets.forEach(r => r.draw());
     } else {
       nextGeneration();
     }
+    if (!onlyTopRocket) 
+      rockets.forEach(r => r.draw());
     if (bestOfGeneration) {
       if (onlyTopRocket) bestOfGeneration.draw();
       else {
@@ -57,7 +57,6 @@ function draw() {
         ellipse(bestOfGeneration.pos.x, bestOfGeneration.pos.y, 10, 10);
       }
     }
-
     drawTarget();
 
     frameCounter++;
@@ -80,6 +79,7 @@ function nextGeneration(seedRocket) {
   }
   //Reduce mutation chance so the behaviour spread decreases as the rocket is refined
   if (topRocket) {
+    bestFitness = Math.round(topRocket.fitness() * 1000) / 1000;
     if (MUTATION_CHANCE > MIN_MUTATION_CHANCE) MUTATION_CHANCE -= topRocket.fitness() / 10;
     else MUTATION_CHANCE = MIN_MUTATION_CHANCE;
   } else MUTATION_CHANCE = MAX_MUTATION_CHANCE;
@@ -95,8 +95,6 @@ function nextGeneration(seedRocket) {
   }
   rockets = newGeneration;
   bestOfGeneration = rockets[0];
-  // bestFitness = Math.round(bestOfGeneration.fitness() * 1000) / 1000;
-  bestFitness = bestOfGeneration.fitness();
   generation++;
   generationAge = 0;
   simComplete = false;

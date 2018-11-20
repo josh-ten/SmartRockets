@@ -80,7 +80,7 @@ class Rocket {
     //Won = 0.1 -> 1
     //0 < winAge < FRAMES_PER_SIM
     if (this.won)
-      return (this.winAge / FRAMES_PER_SIM) * 0.9 + 0.1;
+      return 0.7 / (this.finishAge / FRAMES_PER_SIM);
 
     //Close = 0 -> 0.1
     //distFromTarget will be > 30 as the rocket has not won
