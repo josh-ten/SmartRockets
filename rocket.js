@@ -44,7 +44,14 @@ class Rocket {
       this.T2 = step.T2;
       this.thrust(step.T1, step.T2);
       this.kinematics();
+      this.collisions();
     }
+  }
+
+  collisions() {
+    obstacles.forEach(o => {
+      if (this.collidesWith(o)) this.die();
+    });
   }
   
   kinematics() {
@@ -106,5 +113,11 @@ class Rocket {
 
   distFromTarget() {
     return this.pos.copy().sub(target).mag();
+  }
+
+  collidesWith(obstacle) {
+    return withinBounds(this.pos.x, this.pos.y, 
+      obstacle.x, obstacle.x+obstacle.w,
+      obstacle.y, obstacle.y+obstacle.h);
   }
 }

@@ -1,7 +1,7 @@
 const ROCKET_SPEED = 0.1;
 const GRAVITY = 0;
 const ROCKET_COUNT = 100;
-const FRAMES_PER_SIM = 150;
+const FRAMES_PER_SIM = 250;
 let SIM_SPEED = 1;
 const MAX_MUTATION_CHANCE = 0.6;
 const MIN_MUTATION_CHANCE = 0.0001;
@@ -11,6 +11,7 @@ let generation = 0;
 let generationAge = 0;
 let frameCounter = 0;
 let rockets = [];
+let obstacles = [];
 let target;
 let spawnPt;
 let rocketSprite;
@@ -29,6 +30,10 @@ function setup() {
   for (let i = 0; i < ROCKET_COUNT; i++) {
     rockets.push(new Rocket(spawnPt.x, spawnPt.y, initSteps()));
   }
+
+  // obstacles.push(new Obstacle(width*0.25, height*0.5, width*0.5, 100));
+  obstacles.push(new Obstacle(0, height*0.8, width*0.5, 10));
+  obstacles.push(new Obstacle(width*0.3, height*0.4, width, 10));
 }
 
 function draw() {
@@ -45,6 +50,7 @@ function draw() {
     generationAge++;
     if (generationAge < FRAMES_PER_SIM) {
       rockets.forEach(r => r.update());
+      if (rockets.every(r => r.dead == true)) nextGeneration();
     } else {
       nextGeneration();
     }
@@ -58,6 +64,8 @@ function draw() {
       }
     }
     drawTarget();
+
+    obstacles.forEach(o => o.draw());
 
     frameCounter++;
   }
@@ -130,6 +138,9 @@ function mousePressed() {
   target = createVector(mouseX, mouseY);
 }
 
+function withinBounds(x, y, minx, maxx, miny, maxy) {
+  return (x > minx && x < maxx && y > miny && y < maxy);
+}
 function outOfBounds(x, y) {
   return (x > width || x < 0 || y > height || y < 0);
 }
